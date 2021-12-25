@@ -12,7 +12,6 @@ repositories {
 
 dependencies {
     compileOnly(files("libs/spigot152.jar"))
-    //compileOnly(files("libs/Client-Connect-API.jar"))
     compileOnly(files("libs/AuthMe-5.2-SNAPSHOT-legacy.jar"))
 }
 
