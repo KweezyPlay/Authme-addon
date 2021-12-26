@@ -4,6 +4,7 @@ import fr.xephi.authme.events.LoginEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,7 +24,9 @@ public class onAuthListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAuth(LoginEvent event) {
         Player p = event.getPlayer();
-
+        Location plocation = p.getLocation();
+        plocation.setPitch(90);
+        p.teleport(plocation);
         ItemStack i = new ItemStack(Material.MAP, 1);
 
         MapView map = Bukkit.createMap(p.getWorld());
@@ -36,7 +39,7 @@ public class onAuthListener implements Listener {
 
         String message = "&b&l[Captcha]&r &7Введите число с картинки";
         p.sendMessage("===========================");
-        p.sendMessage((String) ChatColor.translateAlternateColorCodes('&', message));
+        p.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
 
         BufferedImage image = null;
         try {
