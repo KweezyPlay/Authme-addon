@@ -20,13 +20,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 
+import static com.kweezy.bridge.Utils.connectToServer;
+
 public class onAuthListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onAuth(LoginEvent event) {
         Player p = event.getPlayer();
-        Location plocation = p.getLocation();
-        plocation.setPitch(90);
-        p.teleport(plocation);
+
         ItemStack i = new ItemStack(Material.MAP, 1);
 
         MapView map = Bukkit.createMap(p.getWorld());
@@ -44,17 +44,26 @@ public class onAuthListener implements Listener {
         BufferedImage image = null;
         try {
             image = ImageIO.read(new URL("https://rasphost.com/test-contact/captcha/image.php?code=" + code));
+            map.addRenderer(new Renderer(image));
+
+            i.setDurability(map.getId());
+            p.getInventory().setHeldItemSlot(0);
+            p.getInventory().setItem(0, i);
+
+            Location plocation = p.getLocation();
+            plocation.setPitch(90);
+            p.teleport(plocation);
+
         } catch (IOException e) {
-            p.kickPlayer("System exception. Try again later.");
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&', "&b&l[Captcha]&r &cВнутренняя ошибка, сообщите администратору!"));
+            Bukkit.getScheduler().runTaskLater(Bridge.getPlugin(Bridge.class), new Runnable() {
+                @Override
+                public void run() {
+                    connectToServer(p, "main");
+                }
+            }, 60L);
+            //p.kickPlayer("System exception. Try again later.");
         }
-
-        map.addRenderer(new Renderer(image));
-
-        i.setDurability(map.getId());
-        p.getInventory().setHeldItemSlot(0);
-        p.getInventory().setItem(0, i);
-
-
 
     }
     public int getRandomNumberUsingNextInt(int min, int max) {

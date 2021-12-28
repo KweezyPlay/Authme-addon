@@ -7,10 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
-
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
+import static com.kweezy.bridge.Utils.connectToServer;
 
 public class onMessageListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -23,7 +20,7 @@ public class onMessageListener implements Listener {
 
             String message1 = "&b&l[Captcha]&r &7Подождите 3 секунды, присоединяем...";
             p.getInventory().clear();
-            p.sendMessage((String) ChatColor.translateAlternateColorCodes('&', message1));
+            p.sendMessage(ChatColor.translateAlternateColorCodes('&', message1));
             Bridge.getPlugin(Bridge.class).captcha.remove(p);
             Bukkit.getScheduler().runTaskLater(Bridge.getPlugin(Bridge.class), new Runnable() {
                 @Override
@@ -42,23 +39,6 @@ public class onMessageListener implements Listener {
         }
 
         event.setCancelled(true);
-    }
-
-    private void connectToServer(Player player, String server) {
-        try {
-            ByteArrayOutputStream b = new ByteArrayOutputStream();
-            DataOutputStream out = new DataOutputStream(b);
-            try {
-
-                out.writeUTF("Connect");
-                out.writeUTF(server);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            player.sendPluginMessage(Bridge.getPlugin(Bridge.class), "BungeeCord", b.toByteArray());
-        } catch (org.bukkit.plugin.messaging.ChannelNotRegisteredException e) {
-            Bukkit.getLogger().warning(" ERROR - Usage of bungeecord connect effects is not possible. Your server is not having bungeecord support (Bungeecord channel is not registered in your minecraft server)!");
-        }
     }
 }
 
